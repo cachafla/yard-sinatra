@@ -116,15 +116,32 @@ module YARD
       # Route handler for YARD's legacy parser.
       module Legacy
         class RouteHandler < Ruby::Legacy::Base
+          VERBS = %w[get head post put delete not_found]
           include AbstractRouteHandler
-          handles /\A(get|post|put|delete|head|not_found)[\s\(].*/m
+          handles /\A.*(get|post|put|delete|head|not_found.*)[\s\(].*/m
 
           def http_verb
-            statement.tokens.first.text.upcase
+            method_call_string = ''
+            space  = YARD::Parser::Ruby::Legacy::RubyToken::TkSPACE
+            lparen = YARD::Parser::Ruby::Legacy::RubyToken::TkLPAREN
+
+            for token in statement.tokens
+              if token.is_a?(space) || token.is_a?(lparen)
+                break
+              else
+                method_call_string << token.text
+              end
+            end
+
+            VERBS.detect{|v| method_call_string.include?(v)}.upcase
           end
 
           def http_path
-            statement.tokens[2].text
+            path = statement.tokens.detect do |t|
+              t.is_a?(YARD::Parser::Ruby::Legacy::RubyToken::TkSTRING)
+            end
+
+            path.text
           end
         end
       end
