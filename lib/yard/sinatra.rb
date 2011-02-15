@@ -118,7 +118,7 @@ module YARD
         class RouteHandler < Ruby::Legacy::Base
           VERBS = %w[get head post put delete not_found]
           include AbstractRouteHandler
-          handles /\A.*(get|post|put|delete|head|not_found.*)[\s\(].*/m
+          handles /\A(.*\.){0,1}(get|post|put|delete|head|not_found)[\s\(].*/m
 
           def http_verb
             method_call_string = ''
