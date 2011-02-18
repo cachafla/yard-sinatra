@@ -3,6 +3,13 @@ require 'sinatra/base'
 module Sinatra
   module SessionAuth
 
+    # Deletes session for the client
+    #
+    # @param user_id
+    def delete(user_id)
+      delete(user_id)
+    end
+
     def self.registered(app)
       app.set :username, 'frank'
       app.set :password, 'changeme'
